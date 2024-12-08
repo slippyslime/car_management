@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Management</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <header>
+        <nav>
+            {% if user.is_authenticated %}
+                <span><h3>Добро пожаловать, {{ user.username }}!</h3></span>
+                <form method="post" action="{% url 'logout' %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="button">Выйти</button>
+                </form>
+            {% else %}
+                <a href="{% url 'login' %}" class="button">Войти</a>
+                <a href="{% url 'signup' %}" class="menu">Зарегистрироваться</a>
+            {% endif %}
+            <a href="/" class="menu">Главная</a>
+            <a href="{% url 'add_car' %}" class="menu">Добавить автомобиль</a>
+            {% if messages %}
+                <div class="messages">
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </nav>
+    </header>
+    <main>
+        <div class="features">
+            {% block content %}
+            {% endblock %}
+        </div>
+        <footer>
+            <p>All Rights Reserved by IT-Solutions</p>
+        </footer>
+    </main>
+</body>
+</html>

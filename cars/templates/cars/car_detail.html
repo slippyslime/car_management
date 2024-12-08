@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+{% extends 'base.html' %}
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Car Detail</title>
+</head>
+<body>
+    {% block content %}
+    <h1>{{ car.make }} {{ car.model }}</h1>
+    <p><strong>Год:</strong> {{ car.year }}</p>
+    <p><strong>Описание:</strong> {{ car.description }}</p>
+    <p><strong>Владелец:</strong> {{ car.owner.username }}</p>
+
+    <!-- Кнопки для автора -->
+    {% if user.is_authenticated and user == car.owner %}
+        <a href="{% url 'edit_car' car.id %}" class="button">Редактировать</a>
+        <form method="post" action="{% url 'delete_car' car.id %}" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" class="button" style="background-color: red;">Удалить</button>
+        </form>
+    {% endif %}
+
+    <h2>Комментарии:</h2>
+    <div>
+        {% for comment in comments %}
+            <p><strong>{{ comment.author.username }}</strong>: {{ comment.content }}</p>
+        {% empty %}
+            <p>Нет комментариев.</p>
+        {% endfor %}
+    </div>
+
+    <!-- Форма для добавления комментария -->
+    {% if user.is_authenticated %}
+        <h3>Оставьте комментарий</h3>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="button">Отправить</button>
+        </form>
+    {% else %}
+        <p>Чтобы оставить комментарий, пожалуйста, <a href="{% url 'login' %}">войдите</a> в систему.</p>
+    {% endif %}
+
+    {% endblock %}
+</body>
+</html>
